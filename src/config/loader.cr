@@ -246,6 +246,8 @@ module Meridian
       getter https_port : Int32 = 443
       getter data_dir : String = "%h/.local/share/meridian-caddy"
       getter drain_timeout : Int32 = 300
+      # Drops request URIs and headers from Caddy's logs, for apps whose URLs carry bearer tokens.
+      getter? redact_request_logs : Bool = false
 
       def initialize(
         @image : String? = nil,
@@ -253,6 +255,7 @@ module Meridian
         @https_port : Int32 = 443,
         @data_dir : String = "%h/.local/share/meridian-caddy",
         @drain_timeout : Int32 = 300,
+        @redact_request_logs : Bool = false,
       )
         raise ValidationError.new("proxy.http_port must be positive") if @http_port < 1
         raise ValidationError.new("proxy.https_port must be positive") if @https_port < 1
@@ -581,7 +584,7 @@ module Meridian
       SERVER_KEYS         = {"hosts", "proxy", "cmd", "image", "managed", "units"}
       SERVER_PROXY_KEYS   = {"host", "ssl", "app_port", "healthcheck", "path", "redirect_hosts"}
       HEALTHCHECK_KEYS    = {"path", "interval", "timeout", "retries", "probe_image", "required_successes"}
-      PROXY_KEYS          = {"image", "http_port", "https_port", "data_dir", "drain_timeout"}
+      PROXY_KEYS          = {"image", "http_port", "https_port", "data_dir", "drain_timeout", "redact_request_logs"}
       REGISTRY_KEYS       = {"server", "username", "password"}
       ENV_KEYS            = {"clear", "secret"}
       SSH_KEYS            = {"user", "port", "keys", "proxy_jump", "connect_timeout", "keepalive", "keepalive_interval"}

@@ -218,6 +218,7 @@ proxy:
   https_port: 443
   data_dir: "%h/.local/share/meridian-caddy"
   drain_timeout: 300
+  redact_request_logs: false
 ```
 
 | Key | Type | Required / default | Example | Rules |
@@ -229,6 +230,7 @@ proxy:
 The defaults need `net.ipv4.ip_unprivileged_port_start=80`, which `meridian server bootstrap` sets. Without root, use higher ports and keep an existing port forwarder in front.
 | `data_dir` | `String` | Optional, default `%h/.local/share/meridian-caddy` | `"%h/.local/share/meridian-caddy"` | Mounted at `/data` for certificates and Caddy state. `%h` is systemd's deploy-user home specifier. |
 | `drain_timeout` | `Int32` | Optional, default `300` | `300` | Positive seconds to wait for in-flight requests on the removed upstream; timeout warns and force-stops it. |
+| `redact_request_logs` | `Bool` | Optional, default `false` | `true` | Drops the request URI and headers from every Caddy log line, such as upstream errors during a deploy. Use it when URLs carry bearer tokens. Takes effect on the next `meridian setup`. |
 
 The `data_dir` default lives under the deploy user's home so that nothing in Meridian needs root on the host. Meridian also stores the root Caddyfile, per-service route fragments, Unix admin socket, and reload lock under `~/.config/containers/meridian-caddy/`.
 

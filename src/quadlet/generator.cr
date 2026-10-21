@@ -68,7 +68,7 @@ module Meridian
       end
 
       def proxy_caddyfile : String
-        ProxyCaddyfileTemplate.new.to_s
+        ProxyCaddyfileTemplate.new(@config.resolved_proxy.redact_request_logs?).to_s
       end
 
       def proxy_socket_file : String
@@ -282,6 +282,9 @@ module Meridian
       end
 
       private class ProxyCaddyfileTemplate
+        def initialize(@redact_request_logs : Bool)
+        end
+
         ECR.def_to_s "src/quadlet/templates/proxy_caddyfile.ecr"
       end
 

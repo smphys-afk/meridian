@@ -7,6 +7,14 @@
 	default_bind fdgram/5 {
 		protocols h3
 	}
+<%- if @redact_request_logs -%>
+	log default {
+		format filter {
+			request>uri delete
+			request>headers delete
+		}
+	}
+<%- end -%>
 }
 
 http:// {

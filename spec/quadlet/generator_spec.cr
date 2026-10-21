@@ -557,6 +557,23 @@ describe "Meridian::Quadlet::Generator" do
       output.should contain("import /config/routes/*.caddy")
       output.should contain("redir https://{host}{uri} 308")
       output.should_not contain("*.pending")
+      output.should_not contain("log default")
+    end
+
+    it "drops request URIs and headers from Caddy's logs when asked" do
+      config = load_config(<<-YAML)
+        service: myapp
+        image: example.com/myapp
+        servers:
+          web:
+            hosts: [192.168.1.10]
+        proxy:
+          redact_request_logs: true
+        YAML
+
+      Meridian::Quadlet::Generator.new(config).proxy_caddyfile.should contain(
+        "\tlog default {\n\t\tformat filter {\n\t\t\trequest>uri delete\n\t\t\trequest>headers delete\n\t\t}\n\t}\n}"
+      )
     end
   end
 
