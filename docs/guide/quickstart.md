@@ -24,14 +24,23 @@ For macOS, install the libraries used by the release binary:
 brew install libyaml pcre2 bdw-gc
 ```
 
-Download the binary for your platform from the
-[releases page](https://github.com/treagod/meridian/releases) and put it on your
-`PATH`:
+Download the binary and checksums from the same
+[release](https://github.com/treagod/meridian/releases). For Apple Silicon:
 
 ```bash
-sudo mv meridian /usr/local/bin/
+VERSION=0.1.0-alpha.2
+ARTIFACT="meridian-${VERSION}-macos-arm64"
+BASE_URL="https://github.com/treagod/meridian/releases/download/v${VERSION}"
+curl -fLO "${BASE_URL}/${ARTIFACT}"
+curl -fLO "${BASE_URL}/checksums.txt"
+shasum -a 256 --check --ignore-missing checksums.txt
+chmod +x "$ARTIFACT"
+sudo mv "$ARTIFACT" /usr/local/bin/meridian
 meridian --version
 ```
+
+For an Intel Mac, use `macos-x86_64` instead of `macos-arm64`. Continue only
+after the checksum check prints `OK` for your binary.
 
 Building Meridian yourself with Crystal also produces a native binary, but not
 necessarily a standalone one; depending on your toolchain it may need shared

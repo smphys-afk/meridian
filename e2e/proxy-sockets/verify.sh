@@ -14,7 +14,7 @@ cleanup() {
     trap - EXIT
     cp "$backup/Caddyfile" "$config/Caddyfile"
     rm -f "$config/routes/socket-test.caddy"
-    podman exec meridian-caddy caddy reload --config /config/Caddyfile --adapter caddyfile --address unix//config/admin.sock
+    systemctl --user restart meridian-caddy.service
     podman rm -f --ignore meridian-pebble
     exit "$status"
 }
@@ -28,7 +28,8 @@ podman cp meridian-pebble:/test/certs/pebble.minica.pem "$config/pebble.minica.p
 awk -v storage="/config/${backup##*/}/storage" 'NR==1 {print; print "\tstorage file_system {\n\t\troot " storage "\n\t}\n\tacme_ca https://pebble:14000/dir\n\tacme_ca_root /config/pebble.minica.pem\n\trenew_interval 1s\n\trenewal_window_ratio 0.5"; next} {print}' \
     "$backup/Caddyfile" > "$config/Caddyfile"
 printf 'sockets.example.test {\n\treverse_proxy %s\n}\n' "$upstream" > "$config/routes/socket-test.caddy"
-podman exec meridian-caddy caddy reload --config /config/Caddyfile --adapter caddyfile --address unix//config/admin.sock
+# CertMagic creates its renewal ticker at startup; reload keeps the old interval.
+systemctl --user restart meridian-caddy.service
 
 serial() {
     openssl s_client -connect 127.0.0.1:443 -servername sockets.example.test </dev/null 2>/dev/null | openssl x509 -noout -serial 2>/dev/null

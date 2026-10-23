@@ -15,7 +15,8 @@ and blue/green routing.
 
 ## Upgrade an existing host
 
-This is a breaking change. Setup briefly interrupts **every** app sharing Caddy.
+Upgrading from `v0.1.0-alpha.1` to `v0.1.0-alpha.2` is a breaking change.
+Setup briefly interrupts **every** app sharing Caddy.
 Use this Meridian version for all services on the host, then run:
 
 ```sh

@@ -24,7 +24,7 @@ It is explicitly not a Kubernetes replacement. If you need that, you need that.
 curl -fsSL https://meridian-deploy.dev/install.sh | sh
 ```
 
-The installer covers Linux on x86_64 and ARM64, verifies the release checksum, and drops the binary in `/usr/local/bin`. For macOS, install `libyaml`, `pcre2`, and `bdw-gc` with Homebrew, then download a binary from the [releases page](https://github.com/treagod/meridian/releases).
+The installer covers Linux on x86_64 and ARM64, verifies the release checksum, and drops the binary in `/usr/local/bin`. For macOS, install `libyaml`, `pcre2`, and `bdw-gc` with Homebrew, then follow the [download and checksum steps](https://meridian-deploy.dev/guide/quickstart#install).
 
 ## From source
 
@@ -52,7 +52,7 @@ meridian deploy
 ```
 
 Caddy uses systemd sockets to preserve client IPs, including over HTTP/3.
-Existing hosts need a [breaking upgrade](docs/guide/proxy-socket-upgrade.md).
+Upgrading from `v0.1.0-alpha.1` requires a [breaking upgrade](docs/guide/proxy-socket-upgrade.md): setup briefly interrupts every app sharing Caddy. Use the same Meridian version for every service on the host.
 
 `init` sniffs out Marten, Rails, Elixir, Go, and Node projects and seeds sensible defaults. Whatever it can't guess, it asks.
 
