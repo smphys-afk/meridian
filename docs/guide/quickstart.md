@@ -21,14 +21,14 @@ drops the binary in `/usr/local/bin`.
 For macOS, install the libraries used by the release binary:
 
 ```bash
-brew install libyaml pcre2 bdw-gc
+brew install openssl@3
 ```
 
 Download the binary and checksums from the same
 [release](https://github.com/treagod/meridian/releases). For Apple Silicon:
 
 ```bash
-VERSION=0.1.0-alpha.2
+VERSION=0.1.0-alpha.3
 ARTIFACT="meridian-${VERSION}-macos-arm64"
 BASE_URL="https://github.com/treagod/meridian/releases/download/v${VERSION}"
 curl -fLO "${BASE_URL}/${ARTIFACT}"

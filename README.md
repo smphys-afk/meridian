@@ -24,7 +24,7 @@ It is explicitly not a Kubernetes replacement. If you need that, you need that.
 curl -fsSL https://meridian-deploy.dev/install.sh | sh
 ```
 
-The installer covers Linux on x86_64 and ARM64, verifies the release checksum, and drops the binary in `/usr/local/bin`. For macOS, install `libyaml`, `pcre2`, and `bdw-gc` with Homebrew, then follow the [download and checksum steps](https://meridian-deploy.dev/guide/quickstart#install).
+The installer covers Linux on x86_64 and ARM64, verifies the release checksum, and drops the binary in `/usr/local/bin`. For macOS, install `openssl@3` with Homebrew, then follow the [download and checksum steps](https://meridian-deploy.dev/guide/quickstart#install).
 
 ## From source
 

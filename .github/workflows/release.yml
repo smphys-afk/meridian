@@ -98,6 +98,12 @@ jobs:
         with:
           crystal: 1.21.0
 
+      - name: Use supported OpenSSL libraries
+        run: |
+          brew install openssl@3
+          echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig" >> "$GITHUB_ENV"
+          echo "CRYSTAL_LIBRARY_PATH=$(brew --prefix openssl@3)/lib:$(crystal env CRYSTAL_LIBRARY_PATH)" >> "$GITHUB_ENV"
+
       - name: Install dependencies
         run: shards install --without-development
 
@@ -116,10 +122,18 @@ jobs:
             echo "::error::Binary version '$built' does not match tag '${{ steps.version.outputs.VERSION }}' (check shard.yml version)" >&2
             exit 1
           fi
+          "./$artifact" --help
 
-      - name: Show linked libraries
+      - name: Verify linked libraries
         run: |
-          otool -L "meridian-${{ steps.version.outputs.VERSION }}-${{ matrix.suffix }}"
+          libraries="$(otool -L "meridian-${{ steps.version.outputs.VERSION }}-${{ matrix.suffix }}")"
+          echo "$libraries"
+          echo "$libraries" | tail -n +2 | awk '{print $1}' | while read -r library; do
+            case "$library" in
+              /usr/lib/*|/System/Library/*|"$(brew --prefix)/opt/openssl@3/lib/"*) ;;
+              *) echo "::error::Undocumented runtime library: $library" >&2; exit 1 ;;
+            esac
+          done
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
