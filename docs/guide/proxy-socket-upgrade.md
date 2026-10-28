@@ -15,20 +15,27 @@ and blue/green routing.
 
 ## Upgrade an existing host
 
-Upgrading from `v0.1.0-alpha.1` to `v0.1.0-alpha.2` is a breaking change.
+Upgrading from `v0.1.0-alpha.1` to `v0.1.0-alpha.2` or newer is a breaking change.
 Setup briefly interrupts **every** app sharing Caddy.
-Use this Meridian version for all services on the host, then run:
+Use the same current Meridian version for all services on the host.
+
+Before setup, back up old `ssl: false` route fragments outside
+`~/.config/containers/meridian-caddy/routes/`, then remove those originals.
+These fragments lack `bind fd/3`: they can pass validation but use the wrong
+listener, leaving HTTP requests redirected to HTTPS. Setup creates a 503 route
+for its service when the fragment is missing; deploy restores the app route.
+Existing HTTPS fragments work until the next deploy rewrites them.
+
+During the maintenance window, run:
 
 ```sh
 meridian setup --config path/to/environment.yml
 meridian deploy --config path/to/environment.yml   # repeat for each service
-meridian check --config path/to/environment.yml
+meridian check --config path/to/environment.yml    # repeat for each service
 ```
 
-Setup validates the configuration before stopping Caddy. Old `ssl: false` route
-fragments lack `bind fd/3` and fail validation. Delete those fragments from
-`~/.config/containers/meridian-caddy/routes/`, rerun setup and redeploy the affected
-services. HTTPS fragments work until the next deploy rewrites them.
+Setup validates the configuration before stopping Caddy. A successful validation
+does not prove that legacy HTTP fragments use the correct activated socket.
 
 ## Socket layout
 
